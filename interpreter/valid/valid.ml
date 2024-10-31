@@ -431,8 +431,12 @@ let check_resume_table (c : context) ts2 (xys : (idx * hdl) list) at =
         | Some (RefT (nul', ht)) ->
           let ct = cont_type_of_heap_type c ht x2.at in
           let ft' = func_type_of_cont_type c ct x2.at in
-          require (match_func_type c.types (FuncT (ts4, ts2)) ft') x2.at
-            "type mismatch in continuation type";
+          let ft'' = FuncT (ts4, ts2) in
+          require (match_func_type c.types ft'' ft') x2.at
+            (Printf.sprintf
+               "continuation type %s and %s mismatch in resume table"
+               (string_of_func_type ft'')
+               (string_of_func_type ft'));
           match_stack c (ts3 @ [RefT (nul', ht)]) ts' x2.at
         | _ ->
            error at
